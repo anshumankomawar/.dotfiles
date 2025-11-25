@@ -34,12 +34,8 @@ require("oil").setup({
   skip_confirm_for_simple_edits = true,
   prompt_save_on_select_new_entry = false,
   lsp_file_methods = {
-    -- Enable or disable LSP file operations
     enabled = true,
-    -- Time to wait for LSP file operations to complete before skipping
     timeout_ms = 1000,
-    -- Set to true to autosave buffers that are updated with LSP willRenameFiles
-    -- Set to "unmodified" to only save unmodified buffers
     autosave_changes = false,
   },
   watch_for_changes = true, 
@@ -127,11 +123,66 @@ for i = 1, 5 do
   end, { desc = "Harpoon to File " .. i })
 end
 
--- fzf
+-- treesitter support
+vim.pack.add {
+  "https://github.com/nvim-treesitter/nvim-treesitter",
+  "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+  "https://github.com/windwp/nvim-ts-autotag",
+  "https://github.com/Wansmer/treesj",
+}
+
+---@diagnostic disable-next-line: missing-fields
+require("nvim-treesitter.configs").setup {
+  auto_install = true,
+  highlight = {
+    enable = true,
+  }
+}
+
+local swap = require("nvim-treesitter.textobjects.swap")
+vim.keymap.set("n", "{", function() swap.swap_previous("@parameter.inner") end)
+vim.keymap.set("n", "}", function() swap.swap_next("@parameter.inner") end)
+---@diagnostic disable-next-line: missing-fields
+require("nvim-treesitter.configs").setup {
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true,
+      keymaps = {
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+        ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
+      },
+      include_surrounding_whitespace = true,
+    },
+    move = {
+      enable = true,
+      goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
+      goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
+      goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
+      goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
+    },
+  },
+}
+local tsj = require("treesj")
+
+tsj.setup {
+  max_join_length = 1000000,
+  use_default_keymaps = false,
+}
+
+vim.keymap.set("n", "gs", function() tsj.toggle() end, { desc = "Toggle split/join" })
+vim.keymap.set("n", "gS", function() tsj.toggle { split = { recursive = true } } end, { desc = "Toggle split/join (recursive)" })
+
+require("nvim-ts-autotag").setup {}
+
+---------------------------------------------------------
+
 vim.pack.add({
-  'https://github.com/ibhagwan/fzf-lua',
-  -- version = "1.*"
-  -- 'https://github.com/elanmed/fzf-lua-frecency.nvim'
+  { src = 'https://github.com/ibhagwan/fzf-lua', version = "1.*" },
+  -- 'https://github.com/elanmed/fzf-lua-frecency.nvim',
 })
 local utils = {}
 
@@ -426,78 +477,3 @@ vim.keymap.set('n', '<leader>sW', fzf_lua.grep_cWORD, opts)
 vim.keymap.set('v', '<leader>sg', fzf_lua.grep_visual, opts)
 vim.keymap.set('n', '<leader>sb', fzf_lua.lgrep_curbuf, opts)
 vim.keymap.set('n', '<leader>bb', fzf_lua.buffers, opts)
-vim.keymap.set('n', '<leader>gs', fzf_lua.git_status, opts)
-vim.keymap.set('n', '<leader>gc', fzf_lua.git_commits, opts)
-vim.keymap.set('n', '<leader>gb', fzf_lua.git_branches, opts)
--- vim.keymap.set('n', '<leader>ls', fzf_lua.lsp_document_symbols, opts)
--- vim.keymap.set('n', '<leader>lS', fzf_lua.lsp_workspace_symbols, opts)
--- vim.keymap.set('n', '<leader>lr', fzf_lua.lsp_references, opts)
--- vim.keymap.set('n', '<leader>ld', fzf_lua.lsp_definitions, opts)
--- vim.keymap.set('n', '<leader>lt', fzf_lua.lsp_typedefs, opts)
--- vim.keymap.set('n', '<leader>li', fzf_lua.lsp_implementations, opts)
--- vim.keymap.set('n', '<leader>la', fzf_lua.lsp_code_actions, opts)
--- vim.keymap.set('n', '<leader>lD', fzf_lua.diagnostics_document, opts)
--- vim.keymap.set('n', '<leader>lW', fzf_lua.diagnostics_workspace, opts)
--- vim.keymap.set('n', '<leader>hh', fzf_lua.help_tags, opts)
--- vim.keymap.set('n', '<leader>hm', fzf_lua.man_pages, opts)
-vim.keymap.set('n', '<leader>:', fzf_lua.commands, opts)
--- vim.keymap.set('n', '<leader>hk', fzf_lua.keymaps, opts)
-vim.keymap.set('n', '<leader>sr', fzf_lua.resume, opts)
-vim.keymap.set('n', '<leader>qq', fzf_lua.quickfix, opts)
-vim.keymap.set('n', '<leader>ql', fzf_lua.loclist, opts)
-
-
--- treesitter support
-vim.pack.add {
-  "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
-  "https://github.com/windwp/nvim-ts-autotag",
-  "https://github.com/Wansmer/treesj",
-}
-
----@diagnostic disable-next-line: missing-fields
-require("nvim-treesitter.configs").setup {
-  auto_install = true,
-  highlight = {
-    enable = true,
-  }
-}
-
-local swap = require("nvim-treesitter.textobjects.swap")
-vim.keymap.set("n", "{", function() swap.swap_previous("@parameter.inner") end)
-vim.keymap.set("n", "}", function() swap.swap_next("@parameter.inner") end)
----@diagnostic disable-next-line: missing-fields
-require("nvim-treesitter.configs").setup {
-  textobjects = {
-    select = {
-      enable = true,
-      lookahead = true,
-      keymaps = {
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-        ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
-      },
-      include_surrounding_whitespace = true,
-    },
-    move = {
-      enable = true,
-      goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
-      goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
-      goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
-      goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
-    },
-  },
-}
-local tsj = require("treesj")
-
-tsj.setup {
-  max_join_length = 1000000,
-  use_default_keymaps = false,
-}
-
-vim.keymap.set("n", "gs", function() tsj.toggle() end, { desc = "Toggle split/join" })
-vim.keymap.set("n", "gS", function() tsj.toggle { split = { recursive = true } } end, { desc = "Toggle split/join (recursive)" })
-
-require("nvim-ts-autotag").setup {}
