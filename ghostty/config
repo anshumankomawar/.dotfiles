@@ -1,0 +1,98 @@
+auto-update-channel = tip
+
+# macos-icon = custom-style 
+# macos-icon-frame = chrome 
+# macos-titlebar-style = native
+# macos-titlebar-style = tabs 
+# window-show-tab-bar=never
+background-opacity = 1
+background-opacity-cells=true
+
+# background-opacity = 0.9
+# background-blur = 30
+# custom-shader = ghostty-shaders/crt.glsl 
+# shell-integration-features = true 
+# command = zsh
+desktop-notifications = true
+shell-integration = zsh
+shell-integration-features = true
+shell-integration-features = no-cursor
+cursor-style=block
+# keybind = global:cmd+alt+ctrl+shift+enter=toggle_quick_terminal
+# mouse-hide-while-typing = true
+# title = " "
+# term = xterm-256color
+# # Start tmux by default
+# command = direct:/opt/homebrew/bin/tmux new-session -A -s main
+# command = "/bin/zsh -l -c "zellij""
+
+# Optional: ensure proper TERM
+# term = xterm-256color
+# command = "/bin/zsh -l -c "tmux attach || tmux""
+# command = ~/.config/ghostty/startup.sh
+command = /bin/zsh
+# input = "sesh connect $(sesh list -c | head -1)\n"
+# sesh connect $(sesh list | fzf)
+
+input = "tmux new-session -A -s main\n"
+cursor-style=block
+cursor-style-blink=false
+font-size = 14
+window-inherit-font-size = true
+window-inherit-working-directory = true
+# font-family = "JetBrainsMono Nerd Font"
+# adjust-cell-width = -10%
+# adjust-cell-height = 5%
+font-family = "Iosevka"
+# adjust-cell-width = 5%
+# adjust-cell-height = -5%
+# grapheme-width-method = unicode
+# font-thicken = true
+# font-thicken-strength = 5
+# font-style = Medium 
+# font-style-italic = true 
+# font-style-bold-italic = true 
+
+# adjust-cell-height=25%
+# alpha-blending=native
+# window-colorspace = display-p3
+
+macos-window-shadow = true 
+window-padding-x = 12
+# window-padding-y = 8
+# window-padding-x = 8
+# window-padding-y = 8
+# window-padding-y = 24
+# window-padding-x = 8
+window-padding-y = 6, 6
+# window-padding-balance = true
+
+copy-on-select = true
+confirm-close-surface = false
+# cursor-invert-fg-bg
+
+# keybind=ctrl+\=text:\x15
+keybind=ctrl+a=unbind
+keybind=ctrl+b=unbind
+keybind=ctrl+e=unbind
+keybind=ctrl+f=unbind
+keybind=ctrl+g=unbind
+keybind=ctrl+h=unbind
+keybind=ctrl+j=unbind
+keybind=ctrl+k=unbind
+keybind=ctrl+l=unbind
+keybind=ctrl+n=unbind
+keybind=ctrl+o=unbind
+keybind=ctrl+p=unbind
+keybind=ctrl+r=unbind
+keybind=ctrl+s=unbind
+keybind=ctrl+t=unbind
+keybind=ctrl+u=unbind
+keybind=ctrl+v=unbind
+keybind=ctrl+w=unbind
+keybind=ctrl+x=unbind
+keybind=ctrl+y=unbind
+keybind=ctrl+z=unbind
+keybind=ctrl+space=unbind
+ 
+theme = gruvbox
