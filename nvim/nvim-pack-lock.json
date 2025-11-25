@@ -76,6 +76,10 @@
     "vim-fugitive": {
       "rev": "61b51c0",
       "src": "https://github.com/tpope/vim-fugitive"
+    },
+    "zig.vim": {
+      "rev": "1a1112eec20e28c832a06ddb1d0060f6ce652372",
+      "src": "https://github.com/ziglang/zig.vim"
     }
   }
 }
