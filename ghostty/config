@@ -37,7 +37,7 @@ command = /bin/zsh
 input = "tmux new-session -A -s main\n"
 cursor-style=block
 cursor-style-blink=false
-font-size = 14
+font-size = 13
 window-inherit-font-size = true
 window-inherit-working-directory = true
 # font-family = "JetBrainsMono Nerd Font"
@@ -64,7 +64,7 @@ window-padding-x = 12
 # window-padding-y = 8
 # window-padding-y = 24
 # window-padding-x = 8
-window-padding-y = 6, 6
+# window-padding-y = 6, 6
 # window-padding-balance = true
 
 copy-on-select = true
