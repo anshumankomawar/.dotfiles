@@ -7,11 +7,16 @@
     },
     "fzf-lua": {
       "rev": "ddab8eb",
-      "src": "https://github.com/ibhagwan/fzf-lua"
+      "src": "https://github.com/ibhagwan/fzf-lua",
+      "version": "'1.*'"
     },
     "gitsigns.nvim": {
       "rev": "cdafc32",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "gruber-darker.nvim": {
+      "rev": "98a2e141981cbd5a194a97eae024bf55af854579",
+      "src": "https://github.com/blazkowolf/gruber-darker.nvim"
     },
     "gruvbox-material": {
       "rev": "4bfc698",

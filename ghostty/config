@@ -95,4 +95,4 @@ keybind=ctrl+y=unbind
 keybind=ctrl+z=unbind
 keybind=ctrl+space=unbind
  
-theme = gruvbox
+theme = Gruber Darker 

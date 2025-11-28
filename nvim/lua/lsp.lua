@@ -15,8 +15,8 @@ vim.lsp.enable({
 
 vim.diagnostic.config({
   underline = true,
-  virtual_text = false,
-  virtual_lines = true,
+  virtual_text = true,
+  virtual_lines = false,
   signs = false,
   update_in_insert = false,
   severity_sort = true,
@@ -31,22 +31,22 @@ vim.g.zig_fmt_parse_errors = 0
 vim.g.zig_fmt_autosave = 0
 
 -- zig autocommands
-vim.api.nvim_create_autocmd('BufWritePre',{
-  pattern = {"*.zig", "*.zon"},
-  callback = function(ev)
-    vim.lsp.buf.code_action({
-      context = { only = { "source.organizeImports" } },
-      apply = true,
-    })
-  end
-})
-
-vim.api.nvim_create_autocmd('BufWritePre',{
-  pattern = {"*.zig", "*.zon"},
-  callback = function(ev)
-    vim.lsp.buf.code_action({
-      context = { only = { "source.fixAll" } },
-      apply = true,
-    })
-  end
-})
+-- vim.api.nvim_create_autocmd('BufWritePre',{
+--   pattern = {"*.zig", "*.zon"},
+--   callback = function(ev)
+--     vim.lsp.buf.code_action({
+--       context = { only = { "source.organizeImports" } },
+--       apply = true,
+--     })
+--   end
+-- })
+--
+-- vim.api.nvim_create_autocmd('BufWritePre',{
+--   pattern = {"*.zig", "*.zon"},
+--   callback = function(ev)
+--     vim.lsp.buf.code_action({
+--       context = { only = { "source.fixAll" } },
+--       apply = true,
+--     })
+--   end
+-- })

@@ -398,9 +398,9 @@ require("fzf-lua").setup({
       path_shorten = false,
       list = true,
       height = 0.2,        -- Very thin
-      width = 1.0,
-      row = 1.0,
-      col = 0,
+      width = 0.8,
+      row = 0.35,
+      col = 0.5,
       -- height = 0.3,        -- Very thin
       -- width = 0.6,
       -- row = 0.2,
@@ -470,7 +470,7 @@ local opts = { noremap = true, silent = true }
 
 vim.keymap.set('n', '<leader>ff', fzf_lua.files, opts)
 -- vim.keymap.set('n', '<leader>ff', fzf_lua.frequency, opts)
-vim.keymap.set('n', '<leader>fr', fzf_lua.oldfiles, opts)
+vim.keymap.set('n', '<leader>fr', fzf_lua.resume, opts)
 vim.keymap.set('n', '<leader>fg', fzf_lua.live_grep, opts)
 vim.keymap.set('n', '<leader>sw', fzf_lua.grep_cword, opts)
 vim.keymap.set('n', '<leader>sW', fzf_lua.grep_cWORD, opts)
