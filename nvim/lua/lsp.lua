@@ -28,7 +28,7 @@ vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 -- ZLS 
 --
 vim.g.zig_fmt_parse_errors = 0
-vim.g.zig_fmt_autosave = 0
+vim.g.zig_fmt_autosave = 1
 
 -- zig autocommands
 -- vim.api.nvim_create_autocmd('BufWritePre',{

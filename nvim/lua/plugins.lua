@@ -2,6 +2,15 @@ vim.pack.add({
   "https://github.com/stevearc/oil.nvim",
 })
 
+-- Leetcode
+vim.pack.add({
+  "https://github.com/kawre/leetcode.nvim",
+  "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/MunifTanjim/nui.nvim",
+})
+
+require("leetcode").setup({});
+
 -- Hardtime
 vim.pack.add({
   "https://github.com/m4xshen/hardtime.nvim",
