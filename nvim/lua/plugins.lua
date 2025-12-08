@@ -188,301 +188,94 @@ vim.keymap.set("n", "gS", function() tsj.toggle { split = { recursive = true } }
 require("nvim-ts-autotag").setup {}
 
 ---------------------------------------------------------
-
 vim.pack.add({
-  { src = 'https://github.com/ibhagwan/fzf-lua', version = "1.*" },
+  { src = 'https://github.com/ibhagwan/fzf-lua', version = "main"},
   -- 'https://github.com/elanmed/fzf-lua-frecency.nvim',
 })
-local utils = {}
 
--- From fzf-lua utils - the invisible unicode separator
-utils.nbsp = "\xe2\x80\x82" -- "\u{2002}"
-
--- From fzf-lua utils - string split function
-function utils.strsplit(inputstr, sep)
-  local t = {}
-  local s, m, r = inputstr, nil, nil
-  repeat
-    m, r = s:match("^(.-)" .. sep .. "(.*)$")
-    s = r and r or s
-    table.insert(t, m or s)
-  until not m
-  return t
-end
-
--- ANSI escape sequences
-utils.ansi_escseq = {
-  clear = "\027[0m",
-}
-
--- Function to get ansi coloring from highlight group (simplified)
-function utils.ansi_from_hl(hl, s)
-  if not hl or #hl == 0 or vim.fn.hlexists(hl) ~= 1 then
-    return s, nil
-  end
-  -- Simplified version - just return the string for now
-  -- You can expand this if you need actual color support
-  return s, ""
-end
-
--- Path utilities
-local path = {}
-
-function path.tail(filepath)
-  return vim.fn.fnamemodify(filepath, ":t")
-end
-
-function path.parent(filepath)
-  local parent = vim.fn.fnamemodify(filepath, ":h")
-  return parent ~= "." and parent or nil
-end
-
-function path.remove_trailing(filepath)
-  return filepath:gsub("/$", "")
-end
-
-function path.join(parts)
-  return table.concat(parts, "/")
-end
-
-local fzf_lua = require("fzf-lua")
-
--- require('fzf-lua-frecency').frecency({
---     cwd_only = true,
--- })
-
-require("fzf-lua").setup({
-  "hide",
-  hls = { border = "NonText" },
-  formatters    = {
-    path = {
-      filename_first_aligned = {
-        -- <Tab> is used as the invisible space between the parent and the file part
-        enrich = function(o, v)
-          o.fzf_opts = vim.tbl_extend("keep", o.fzf_opts or {}, { ["--tabstop"] = 1 })
-          if tonumber(v) == 2 then
-            -- https://github.com/ibhagwan/fzf-lua/pull/1255
-            o.fzf_opts = vim.tbl_extend("keep", o.fzf_opts or {}, {
-              ["--ellipsis"] = " ",
-              ["--no-hscroll"] = true,
-            })
-          end
-          return o
-        end,
-        -- underscore `_to` returns a custom to function when options could
-        -- affect the transformation, here we create a different function
-        -- base on the dir part highlight group.
-        -- We use a string function with hardcoded values as non-scope vars
-        -- (globals or file-locals) are stored by ref and will be nil in the
-        -- `string.dump` (from `config.bytecode`), we use the 3rd function
-        -- argument `m` to pass module imports (path, utils, etc).
-        _to = function(o, v)
-          local _, hl_dir = utils.ansi_from_hl(o.hls.dir_part, "foo")
-          local _, hl_file = utils.ansi_from_hl(o.hls.file_part, "foo")
-          local v2 = tonumber(v) ~= 2 and "" or [[, "\xc2\xa0" .. string.rep(" ", 200) .. s]]
-          return ([[
-            return function(s, _, m)
-              local _path, _utils = m.path, m.utils
-              local _hl_dir = "%s"
-              local _hl_file = "%s"
-              local tail = _path.tail(s)
-              local parent = _path.parent(s)
-              if #_hl_file > 0 then
-                tail = _hl_file .. tail .. _utils.ansi_escseq.clear
-              end
-              if parent then
-                parent = _path.remove_trailing(parent)
-                if #_hl_dir > 0 then
-                  parent = _hl_dir .. parent .. _utils.ansi_escseq.clear
-                end
-                local padding = string.rep(" ", math.max(1, 80 - #tail))
-                return tail .. padding .. parent %s
-              else
-                return tail %s
-              end
-            end
-          ]]):format(hl_dir or "", hl_file or "", v2, v2)
-        end,
-        from = function(s, _)
-          s = s:gsub("\xc2\xa0     .*$", "") -- gsub v2 postfix
-          local parts = utils.strsplit(s, utils.nbsp)
-          local last = parts[#parts]
-          -- Lines from grep, lsp, tags are formatted <file>:<line>:<col>:<text>
-          -- the pattern below makes sure tab doesn't come from the line text
-          local filename, rest = last:match("^([^:]-)\t(.+)$")
-          if filename and rest then
-            local parent
-            if utils.__IS_WINDOWS and path.is_absolute(rest) then
-              parent = rest:sub(1, 2) .. (#rest > 2 and rest:sub(3):match("^[^:]+") or "")
-            else
-              parent = rest:match("^[^:]+")
-            end
-            local fullpath = path.join({ parent, filename })
-            -- overwrite last part with restored fullpath + rest of line
-            parts[#parts] = fullpath .. rest:sub(#parent + 1)
-            return table.concat(parts, utils.nbsp)
-          else
-            return s
-          end
-        end
-      },
-    },
-  },
-
-  -- Global ignore patterns (replaces your complex fd_opts/rg_opts setup)
-  file_ignore_patterns = {
-    -- Version control
-    "%.git",
-
-    -- Dependencies
-    "node_modules",
-    "vendor",
-    "%.bundle",
-    "%.gradle",
-    "%.settings",
-
-    -- Build outputs
-    "dist",
-    -- "build", 
-    "target",
-    "%.next",
-    "env",
-    "%.bemol",
-    "%.brazil",
-    "logs",
-
-    -- Cache and temporary files
-    "__pycache__",
-    "%.pytest_cache",
-    "%.cargo",
-    "%.dart_tool",
-    "%.pub%-cache",
-
-    -- Virtual environments
-    "%.venv",
-    "venv",
-    "%.env",
-
-    -- Coverage reports
-    "coverage",
-    "%.coverage",
-    "%.nyc_output",
-
-    -- Cloud/Infrastructure
-    "cdk%.out",
-    "%.aws%-sam",
-    "%.terraform",
-
-    -- IDE/Editor files
-    "%.vscode",
-    "%.idea",
-  },
-
-  defaults = {
-    file_icons = "mini",
-    git_icons = false,
-  },
-
-  winopts = {
-    fullscreen = true,
-    border = "none",
-    preview = {
-      layout = "horizontal",
-      horizontal = "right:50%,noborder",
-      border = "none",
-    },
-    on_create = function()
-      vim.cmd("set guicursor+=a:blinkon0")
-    end,
-  },
-
-  files = {
-    cwd_prompt = false,
-    no_ignore = true,
-    path_shorten = false,
-    formatter = "path.filename_first",
-    winopts = {
-      fullscreen= false,
-      -- split = "botright 10new",
-      path_shorten = false,
-      list = true,
-      height = 0.2,        -- Very thin
-      width = 0.8,
-      row = 0.35,
-      col = 0.5,
-      -- height = 0.3,        -- Very thin
-      -- width = 0.6,
-      -- row = 0.2,
-      border = "none",
-      backdrop = 80,
-      preview = { hidden = "hidden" },
-    },
-    fzf_opts = {
-      ['--layout'] = 'reverse',
-    },
-  },
-
+require'fzf-lua'.setup({
   fzf_colors = {
     false,
-    ["fg"] = { "fg", "Normal" },
-    ["bg"] = { "bg", "Normal" },
-    ["bg+"] = { "bg", "CursorLine" },
-    ["fg+"] = { "fg", "Normal" },
-    ["hl"] = { "fg", "FzfLuaFzfMatch" },
-    ["hl+"] = { "fg", "FzfLuaFzfMatch" },
-    ["info"] = { "fg", "Normal" },
-    ["prompt"] = { "fg", "Normal" },
-    ["pointer"] = "-1",
-    ["marker"] = "-1",
-    ["spinner"] = { "fg", "Normal" },
-    ["header"] = { "fg", "Normal" },
+    -- ["fg"] = { "fg", "Normal" },
+    -- ["fg+"] = { "fg", "Normal" },
+    -- ["fg"] = { "fg", "Normal" },
+    -- ["bg"] = { "bg", "Normal" },
+    -- ["bg+"] = { "bg", "CursorLine" },
+    -- ["fg+"] = { "Normal" },
+    -- ["hl"] = { "fg", "FzfLuaFzfMatch" },
+    -- ["separator"] = { "bg", "Normal" },
+    -- ["hl+"] = { "fg", "FzfLuaFzfMatch" },
+    -- ["info"] = { "fg", "Normal" },
+    -- ["prompt"] = { "fg", "Normal" },
+    -- ["pointer"] = "-1",
+    -- ["marker"] = "-1",
+    -- ["spinner"] = { "fg", "Normal" },
+    -- ["header"] = { "fg", "Normal" },
     ["gutter"] = "-1",
   },
-  fzf_args = '--pointer=',
-
-  fzf_opts = {
-    ['--no-separator'] = '',
-    ['--no-info'] = '',
-    ['--no-bold'] = '',
-    ['--prompt'] = " Find File: ",
-  },
-
-  grep = {
-    prompt = ' Grep Files: ',
-    input_prompt = 'Grep For❯ ',
-    no_header = true,
-    no_header_i = true,
-    winopts = {
-      -- fullscreen = false,
-      -- path_shorten = false,
-      -- height = 0.2,
-      -- list = true,
-      -- width = 1.0,
-      -- row = 1.0,
-      -- col = 0,
-      fullscreen= false,
-      split = "botright 10new",
-      path_shorten = false,
-      list = true,
-      border = "none",
-      preview = { hidden = "hidden" },
+  winopts = {
+    split = "belowright 10new",
+    title = false,
+    title_flags = false,
+    preview = {
+      hidden = true,
     },
+    on_create = function()
+            vim.schedule(function()
+        local info = require("fzf-lua").get_info()
+        local picker = info and info.cmd or "fzf"
+        local cwd = info and info.cwd or vim.fn.getcwd()
+        cwd = vim.fn.fnamemodify(cwd, ":~:.")
+        
+        vim.wo.statusline = string.format(
+          " %s %%=%%{v:lua.statusline_git()}  %s ",
+          picker,
+          cwd
+        )
+      end)
+    end,
   },
-
-  live_grep = {
-    stderr = false,
+  files = {
+    -- file icons are distracting
+    file_icons = "mini",
+    -- git icons are nice
+    git_icons = false,
+    -- but don't mess up my anchored search
+    _fzf_nth_devicons = true,
   },
-})
+  buffers = {
+    file_icons = false,
+    git_icons = true,
+    -- no nth_devicons as we'll do that
+    -- manually since we also use
+    -- with-nth
+  },
+  fzf_args = "--pointer=",
+  fzf_opts = {
+    ["--no-separator"] = "",
+    ["--prompt"] = "",
+    ["--pointer"] = " ",
+    ["--layout"] = "default",
+  },
+});
 
--- Keymaps
-local opts = { noremap = true, silent = true }
+vim.keymap.set('n', '<leader>ff', require("fzf-lua").files, opts)
+vim.keymap.set('n', '<leader>fg', require("fzf-lua").live_grep, opts)
 
-vim.keymap.set('n', '<leader>ff', fzf_lua.files, opts)
--- vim.keymap.set('n', '<leader>ff', fzf_lua.frequency, opts)
-vim.keymap.set('n', '<leader>fr', fzf_lua.resume, opts)
-vim.keymap.set('n', '<leader>fg', fzf_lua.live_grep, opts)
-vim.keymap.set('n', '<leader>sw', fzf_lua.grep_cword, opts)
-vim.keymap.set('n', '<leader>sW', fzf_lua.grep_cWORD, opts)
-vim.keymap.set('v', '<leader>sg', fzf_lua.grep_visual, opts)
-vim.keymap.set('n', '<leader>sb', fzf_lua.lgrep_curbuf, opts)
-vim.keymap.set('n', '<leader>bb', fzf_lua.buffers, opts)
+vim.keymap.set('', '<C-p>', function()
+  vim.schedule(function()
+    local opts = {}
+    opts.cmd = 'fd --color=never --hidden --type f --type l --exclude .git'
+    local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
+    if base ~= '.' then
+      opts.cmd = opts.cmd .. (" | proximity-sort %s"):format(vim.fn.shellescape(vim.fn.expand('%')))
+    end
+    opts.fzf_opts = {
+      ['--scheme']   = 'path',
+      ['--tiebreak'] = 'index',
+      ["--layout"]   = "default",
+      ['--no-separator'] = "",
+    }
+    require'fzf-lua'.files(opts)
+  end)
+end)

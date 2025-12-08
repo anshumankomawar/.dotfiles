@@ -11,6 +11,7 @@ require("mason").setup({})
 vim.lsp.enable({
   "lua_ls",
   "zls",
+  "ts_ls",
 })
 
 vim.diagnostic.config({

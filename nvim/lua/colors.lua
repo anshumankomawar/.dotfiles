@@ -17,7 +17,6 @@
 -- vim.api.nvim_set_hl(0, "WinbarNC", { link = "Normal" })
 
 
-
 vim.pack.add({"https://github.com/blazkowolf/gruber-darker.nvim"})
 vim.cmd.colorscheme("gruber-darker")
 

@@ -24,7 +24,7 @@ opt.relativenumber = true
 opt.nu = true                                        -- show line numbers
 opt.wrap = false                                     -- don't wrap lines
 opt.numberwidth = 1
-opt.ruler = false
+opt.ruler = true 
 --- search
 opt.grepprg = "rg --vimgrep --hidden --smart-case"
 opt.incsearch = true                                 -- use incremental search
@@ -38,7 +38,32 @@ opt.splitright = true
 opt.splitbelow = true
 opt.ignorecase = true
 opt.smartcase = true
-opt.laststatus = 0
+opt.laststatus = 3
+local function git_branch()
+    local branch = vim.fn.system("git branch --show-current 2>/dev/null | tr -d '\n'")
+    if branch ~= "" then
+        return "(" .. branch .. ")"
+    end
+    return ""
+end
+
+local git_branch_cache = {}
+
+vim.api.nvim_create_autocmd({"BufEnter", "FocusGained"}, {
+    callback = function()
+        git_branch_cache[vim.fn.bufnr()] = git_branch()
+    end
+})
+
+local function get_git_branch()
+    return git_branch_cache[vim.fn.bufnr()] or ""
+end
+
+_G.statusline_git = get_git_branch
+
+opt.showmode = false
+opt.statusline = " %f %m%r%= %{v:lua.statusline_git()} %l:%c "
+-- opt.statusline = " %{mode()} | %f %m%r%= %l:%c "
 opt.cmdheight = 0
 -- opt.cursorline = true 
 opt.scrolloff = 8
