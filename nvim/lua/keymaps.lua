@@ -47,7 +47,7 @@ opt.splitbelow = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.laststatus = 3
-opt.statusline = "%<%f %h%m%r%=%{%v:lua.require('patch').get_status()%}       %-14.(%l,%c%V%) %P"
+-- opt.statusline = "%<%f %h%m%r%=%{%v:lua.require('patch').get_status()%}       %-14.(%l,%c%V%) %P"
 opt.cmdheight = 0
 opt.scrolloff = 8
 opt.signcolumn = "number"

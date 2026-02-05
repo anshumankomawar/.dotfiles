@@ -5,6 +5,10 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
     },
+    "codecompanion.nvim": {
+      "rev": "3062e0bd14e5dd11f156d73b653298e538b43193",
+      "src": "https://github.com/olimorris/codecompanion.nvim"
+    },
     "fzf-lua": {
       "rev": "ddab8eb",
       "src": "https://github.com/ibhagwan/fzf-lua",
@@ -77,10 +81,6 @@
     "oil.nvim": {
       "rev": "01cb3a8",
       "src": "https://github.com/stevearc/oil.nvim"
-    },
-    "patch": {
-      "rev": "2084883c61faf71aa33c719329bf719ea2ced223",
-      "src": "file:///Users/anshumankomawar/code/patch"
     },
     "plenary.nvim": {
       "rev": "b9fd522",
