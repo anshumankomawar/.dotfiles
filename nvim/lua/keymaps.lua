@@ -5,30 +5,38 @@ local s = { silent = true }
 vim.g.mapleader = " "
 
 --- defaults
-opt.swapfile = false                                 -- don't use swapfile
-opt.autochdir = false                                -- auto change current working dir
+opt.swapfile = false  -- don't use swapfile
+opt.autochdir = false -- auto change current working dir
 opt.autoread = true
 opt.exrc = true
-opt.errorbells = false                               -- don't use error bells
+opt.errorbells = false                                   -- don't use error bells
 opt.visualbell = false
-opt.backup = false                                   -- don't store file backups
-opt.updatetime = 50                                  -- neovim refresh rate (ms)
+opt.backup = false                                       -- don't store file backups
+opt.updatetime = 50                                      -- neovim refresh rate (ms)
 --- undo
 opt.undodir = vim.fn.stdpath('cache') .. '/nvim/undodir' -- path to undo directory
-opt.undofile = true                                  -- keep undofile
+opt.undofile = true                                      -- keep undofile
 --- pmenu
 opt.completeopt = { "menuone", "menu", "fuzzy" }
 opt.pumheight = 10
---- lines 
+--- lines
 opt.relativenumber = true
-opt.nu = true                                        -- show line numbers
-opt.wrap = false                                     -- don't wrap lines
+opt.nu = true    -- show line numbers
+opt.wrap = false -- don't wrap lines
 opt.numberwidth = 1
-opt.ruler = true 
+opt.ruler = true
 --- search
+opt.path = ".,**"
+opt.wildignore = "*.o,*.obj,*.pyc,*.class,node_modules/**,.git/**,target/**,build/**"
+opt.wildmenu = true
 opt.grepprg = "rg --vimgrep --hidden --smart-case"
-opt.incsearch = true                                 -- use incremental search
-opt.hlsearch = false                                 -- don't highlight search result
+opt.grepformat = "%f:%l:%c:%m"
+vim.api.nvim_create_user_command('G', function(opts)
+  vim.cmd("silent grep! " .. opts.args)
+  vim.cmd("copen")
+end, { nargs = '+' })
+opt.incsearch = true -- use incremental search
+opt.hlsearch = false -- don't highlight search result
 opt.shortmess:append('c')
 -- graphics
 opt.guicursor = "i:block"
@@ -38,34 +46,10 @@ opt.splitright = true
 opt.splitbelow = true
 opt.ignorecase = true
 opt.smartcase = true
+-- opt.signcolumn = "yes"
 opt.laststatus = 3
-local function git_branch()
-    local branch = vim.fn.system("git branch --show-current 2>/dev/null | tr -d '\n'")
-    if branch ~= "" then
-        return "(" .. branch .. ")"
-    end
-    return ""
-end
-
-local git_branch_cache = {}
-
-vim.api.nvim_create_autocmd({"BufEnter", "FocusGained"}, {
-    callback = function()
-        git_branch_cache[vim.fn.bufnr()] = git_branch()
-    end
-})
-
-local function get_git_branch()
-    return git_branch_cache[vim.fn.bufnr()] or ""
-end
-
-_G.statusline_git = get_git_branch
-
-opt.showmode = false
-opt.statusline = " %f %m%r%= %{v:lua.statusline_git()} %l:%c "
--- opt.statusline = " %{mode()} | %f %m%r%= %l:%c "
+opt.statusline = "%<%f %h%m%r%=%{%v:lua.require('patch').get_status()%}       %-14.(%l,%c%V%) %P"
 opt.cmdheight = 0
--- opt.cursorline = true 
 opt.scrolloff = 8
 -- opt.signcolumn = 'no'
 -- perf
@@ -80,10 +64,10 @@ opt.smartindent = true -- autoindent new lines
 
 keymap("n", "<leader>pu", '<cmd>lua vim.pack.update()<CR>')
 keymap('t', '<ESC>', '<C-\\><C-n>', { noremap = true })
-keymap('n', '<leader>h', ':wincmd h<CR>', { noremap = true, silent=true })
-keymap('n', '<leader>j', ':wincmd j<CR>', { noremap = true, silent=true })
-keymap('n', '<leader>k', ':wincmd k<CR>', { noremap = true, silent=true })
-keymap('n', '<leader>l', ':wincmd l<CR>', { noremap = true, silent=true })
+keymap('n', '<leader>h', ':wincmd h<CR>', { noremap = true, silent = true })
+keymap('n', '<leader>j', ':wincmd j<CR>', { noremap = true, silent = true })
+keymap('n', '<leader>k', ':wincmd k<CR>', { noremap = true, silent = true })
+keymap('n', '<leader>l', ':wincmd l<CR>', { noremap = true, silent = true })
 keymap('n', '<S-Tab>', ':tabprevious<CR>', { noremap = true })
 keymap('n', '<leader>t', ':tabnew<CR>', { noremap = true })
 keymap('n', '<Leader>+', ':vertical resize +5<CR>', { noremap = true, silent = true })
@@ -106,11 +90,10 @@ keymap({ "n", "v" }, "<leader>y", [["+y]])
 keymap("n", "<leader>Y", [["+Y]])
 keymap("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
-require("vim._extui").enable{
-  enable=true,
+require("vim._extui").enable {
+  enable = true,
   msg = {
-    target='cmd',
-    timeout=4000
+    target = 'cmd',
+    timeout = 4000
   }
 }
-

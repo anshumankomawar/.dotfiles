@@ -12,6 +12,8 @@ vim.lsp.enable({
   "lua_ls",
   "zls",
   "ts_ls",
+  "ruff",
+  "ty",
 })
 
 vim.diagnostic.config({
@@ -25,6 +27,10 @@ vim.diagnostic.config({
 
 -- keymaps
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+
+vim.keymap.set("n", "<leader>ft", function()
+  vim.lsp.buf.format()
+end)
 
 -- ZLS 
 --

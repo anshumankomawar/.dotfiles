@@ -1,20 +1,11 @@
+-- Oil
 vim.pack.add({
   "https://github.com/stevearc/oil.nvim",
 })
 
--- Leetcode
-vim.pack.add({
-  "https://github.com/kawre/leetcode.nvim",
-  "https://github.com/nvim-lua/plenary.nvim",
-  "https://github.com/MunifTanjim/nui.nvim",
-})
-
-require("leetcode").setup({});
-
 -- Hardtime
 vim.pack.add({
   "https://github.com/m4xshen/hardtime.nvim",
-  "https://github.com/MunifTanjim/nui.nvim"
 })
 
 require("hardtime").setup({});
@@ -47,7 +38,7 @@ require("oil").setup({
     timeout_ms = 1000,
     autosave_changes = false,
   },
-  watch_for_changes = true, 
+  watch_for_changes = true,
   win_options = {
     winbar = "%!v:lua.get_oil_winbar()",
   },
@@ -73,7 +64,7 @@ require('blink.cmp').setup({
     menu = {
       draw = {
         columns = {
-          { "label", "label_description", gap = 1 },
+          { "label",     "label_description", gap = 1 },
           { "kind_icon", "kind" }
         },
       }
@@ -82,10 +73,9 @@ require('blink.cmp').setup({
   signature = { enabled = true }
 })
 
-
 -- Git
 vim.pack.add({
-  "https://github.com/tpope/vim-fugitive" ,
+  "https://github.com/tpope/vim-fugitive",
   "https://github.com/lewis6991/gitsigns.nvim",
 })
 
@@ -115,7 +105,7 @@ require("mini.icons").setup({
 
 -- harpoon
 vim.pack.add({
-  {src="https://github.com/ThePrimeagen/harpoon/", branch="harpoon2", name="harpoon"}, 
+  { src = "https://github.com/ThePrimeagen/harpoon/", branch = "harpoon2", name = "harpoon" },
   "https://github.com/nvim-lua/plenary.nvim",
 })
 
@@ -133,67 +123,25 @@ for i = 1, 5 do
 end
 
 -- treesitter support
-vim.pack.add {
+vim.pack.add({
   "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
-  "https://github.com/windwp/nvim-ts-autotag",
-  "https://github.com/Wansmer/treesj",
-}
+})
 
 ---@diagnostic disable-next-line: missing-fields
-require("nvim-treesitter.configs").setup {
+require("nvim-treesitter.configs").setup({
   auto_install = true,
   highlight = {
     enable = true,
   }
-}
-
-local swap = require("nvim-treesitter.textobjects.swap")
-vim.keymap.set("n", "{", function() swap.swap_previous("@parameter.inner") end)
-vim.keymap.set("n", "}", function() swap.swap_next("@parameter.inner") end)
----@diagnostic disable-next-line: missing-fields
-require("nvim-treesitter.configs").setup {
-  textobjects = {
-    select = {
-      enable = true,
-      lookahead = true,
-      keymaps = {
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-        ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
-      },
-      include_surrounding_whitespace = true,
-    },
-    move = {
-      enable = true,
-      goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
-      goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
-      goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
-      goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
-    },
-  },
-}
-local tsj = require("treesj")
-
-tsj.setup {
-  max_join_length = 1000000,
-  use_default_keymaps = false,
-}
-
-vim.keymap.set("n", "gs", function() tsj.toggle() end, { desc = "Toggle split/join" })
-vim.keymap.set("n", "gS", function() tsj.toggle { split = { recursive = true } } end, { desc = "Toggle split/join (recursive)" })
-
-require("nvim-ts-autotag").setup {}
+})
 
 ---------------------------------------------------------
 vim.pack.add({
-  { src = 'https://github.com/ibhagwan/fzf-lua', version = "main"},
+  { src = 'https://github.com/ibhagwan/fzf-lua', version = "main" },
   -- 'https://github.com/elanmed/fzf-lua-frecency.nvim',
 })
 
-require'fzf-lua'.setup({
+require 'fzf-lua'.setup({
   fzf_colors = {
     false,
     -- ["fg"] = { "fg", "Normal" },
@@ -221,14 +169,14 @@ require'fzf-lua'.setup({
       hidden = true,
     },
     on_create = function()
-            vim.schedule(function()
+      vim.schedule(function()
         local info = require("fzf-lua").get_info()
         local picker = info and info.cmd or "fzf"
         local cwd = info and info.cwd or vim.fn.getcwd()
         cwd = vim.fn.fnamemodify(cwd, ":~:.")
-        
+
         vim.wo.statusline = string.format(
-          " %s %%=%%{v:lua.statusline_git()}  %s ",
+          "%s: %s ",
           picker,
           cwd
         )
@@ -253,7 +201,7 @@ require'fzf-lua'.setup({
   fzf_args = "--pointer=",
   fzf_opts = {
     ["--no-separator"] = "",
-    ["--prompt"] = "",
+    -- ["--prompt"] = "",
     ["--pointer"] = " ",
     ["--layout"] = "default",
   },
@@ -261,21 +209,3 @@ require'fzf-lua'.setup({
 
 vim.keymap.set('n', '<leader>ff', require("fzf-lua").files, opts)
 vim.keymap.set('n', '<leader>fg', require("fzf-lua").live_grep, opts)
-
-vim.keymap.set('', '<C-p>', function()
-  vim.schedule(function()
-    local opts = {}
-    opts.cmd = 'fd --color=never --hidden --type f --type l --exclude .git'
-    local base = vim.fn.fnamemodify(vim.fn.expand('%'), ':h:.:S')
-    if base ~= '.' then
-      opts.cmd = opts.cmd .. (" | proximity-sort %s"):format(vim.fn.shellescape(vim.fn.expand('%')))
-    end
-    opts.fzf_opts = {
-      ['--scheme']   = 'path',
-      ['--tiebreak'] = 'index',
-      ["--layout"]   = "default",
-      ['--no-separator'] = "",
-    }
-    require'fzf-lua'.files(opts)
-  end)
-end)

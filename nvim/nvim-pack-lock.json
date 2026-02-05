@@ -78,6 +78,10 @@
       "rev": "01cb3a8",
       "src": "https://github.com/stevearc/oil.nvim"
     },
+    "patch": {
+      "rev": "2084883c61faf71aa33c719329bf719ea2ced223",
+      "src": "file:///Users/anshumankomawar/code/patch"
+    },
     "plenary.nvim": {
       "rev": "b9fd522",
       "src": "https://github.com/nvim-lua/plenary.nvim"

@@ -5,7 +5,7 @@ return {
   capabilities = vim.lsp.protocol.make_client_capabilities(),
   settings = {
     zls = {
-      enable_build_on_save = true,
+      enable_build_on_save = false,
       semantic_tokens = "partial",
     }
   },

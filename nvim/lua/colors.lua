@@ -22,3 +22,4 @@ vim.cmd.colorscheme("gruber-darker")
 
 vim.api.nvim_set_hl(0, "Winbar", { link = "Normal" })
 vim.api.nvim_set_hl(0, "WinbarNC", { link = "Normal" })
+vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
