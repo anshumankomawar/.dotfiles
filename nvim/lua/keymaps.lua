@@ -46,12 +46,11 @@ opt.splitright = true
 opt.splitbelow = true
 opt.ignorecase = true
 opt.smartcase = true
--- opt.signcolumn = "yes"
 opt.laststatus = 3
 opt.statusline = "%<%f %h%m%r%=%{%v:lua.require('patch').get_status()%}       %-14.(%l,%c%V%) %P"
 opt.cmdheight = 0
 opt.scrolloff = 8
--- opt.signcolumn = 'no'
+opt.signcolumn = "number"
 -- perf
 opt.hidden = true
 opt.history = 100
@@ -62,15 +61,11 @@ opt.shiftwidth = 2     -- shift 4 spaces when tab
 opt.tabstop = 2        -- 1 tab == 4 spaces
 opt.smartindent = true -- autoindent new lines
 
-keymap("n", "<leader>pu", '<cmd>lua vim.pack.update()<CR>')
 keymap('t', '<ESC>', '<C-\\><C-n>', { noremap = true })
 keymap('n', '<leader>h', ':wincmd h<CR>', { noremap = true, silent = true })
 keymap('n', '<leader>j', ':wincmd j<CR>', { noremap = true, silent = true })
 keymap('n', '<leader>k', ':wincmd k<CR>', { noremap = true, silent = true })
 keymap('n', '<leader>l', ':wincmd l<CR>', { noremap = true, silent = true })
-keymap('n', '<S-Tab>', ':tabprevious<CR>', { noremap = true })
-keymap('n', '<leader>t', ':tabnew<CR>', { noremap = true })
-keymap('n', '<Leader>+', ':vertical resize +5<CR>', { noremap = true, silent = true })
 keymap('n', '<leader>fmt', ':Format<CR>', { noremap = true })
 keymap('n', '<leader>q', ':xa<CR>', { noremap = true })
 keymap('v', '<C-c>', '"*y', { noremap = true })
@@ -90,7 +85,14 @@ keymap({ "n", "v" }, "<leader>y", [["+y]])
 keymap("n", "<leader>Y", [["+Y]])
 keymap("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
-require("vim._extui").enable {
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'markdown',
+  callback = function()
+    vim.bo.makeprg = 'pandoc % --reference-doc=templates/reference.docx --toc --number-sections -o output/%:t:r.docx'
+  end,
+})
+
+require("vim._core.ui2").enable {
   enable = true,
   msg = {
     target = 'cmd',

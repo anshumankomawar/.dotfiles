@@ -37,7 +37,7 @@ command = /bin/zsh
 input = "tmux new-session -A -s main\n"
 cursor-style=block
 cursor-style-blink=false
-font-size = 13
+font-size = 14
 window-inherit-font-size = true
 window-inherit-working-directory = true
 # font-family = "JetBrainsMono Nerd Font"
@@ -95,5 +95,5 @@ keybind=ctrl+y=unbind
 keybind=ctrl+z=unbind
 keybind=ctrl+space=unbind
  
-theme = Gruber Darker 
-# theme = gruvbox
+# theme = Gruber Darker 
+theme = gruvbox

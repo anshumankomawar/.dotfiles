@@ -1,4 +1,3 @@
--- Oil
 vim.pack.add({
   "https://github.com/stevearc/oil.nvim",
 })
@@ -6,6 +5,7 @@ vim.pack.add({
 -- Hardtime
 vim.pack.add({
   "https://github.com/m4xshen/hardtime.nvim",
+  -- "https://github.com/MunifTanjim/nui.nvim"
 })
 
 require("hardtime").setup({});
