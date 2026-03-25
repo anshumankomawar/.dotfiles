@@ -106,15 +106,14 @@ require('blink.cmp').setup({
 })
 
 local harpoon = require("harpoon")
-local mark = require("harpoon.mark")
-local ui = require("harpoon.ui")
+harpoon:setup()
 
-vim.keymap.set("n", "<leader>H", mark.add_file, { desc = "Harpoon File" })
-vim.keymap.set("n", "<leader>e", ui.toggle_quick_menu, { desc = "Harpoon Quick Menu" })
+vim.keymap.set("n", "<leader>H", function() harpoon:list():add() end, { desc = "Harpoon File" })
+vim.keymap.set("n", "<leader>e", require("minibuffer.integrations.harpoon"), { desc = "Harpoon Quick Menu" })
 
 for i = 1, 5 do
   vim.keymap.set("n", "<leader>" .. i, function()
-    ui.nav_file(i)
+    harpoon:list():select(i)
   end, { desc = "Harpoon to File " .. i })
 end
 

@@ -9,12 +9,13 @@ shell-integration-features = true
 shell-integration-features = no-cursor
 cursor-style=block
 command = /bin/zsh
+window-colorspace = display-p3
 
 input = "tmux new-session -A -s main\n"
 cursor-style=block
 cursor-style-blink=false
-font-size = 27
-font-synthetic-style = true
+font-size = 19
+font-synthetic-style = false
 font-thicken = true
 font-thicken-strength = 50
 window-inherit-working-directory = true
