@@ -6,7 +6,6 @@ vim.g.gruvbox_material_enable_bold = 1
 vim.g.gruvbox_material_transparent_background = 0
 vim.g.gruvbox_material_diagnostic_virtual_text = "colored"
 vim.g.gruvbox_material_diagnostic_line_highlight = 1
-vim.g.gruvbox_material_show_eob = 0
 vim.g.gruvbox_material_dim_inactive_windows = 0
 vim.g.gruvbox_material_statusline_style = 'mix'
 
@@ -15,7 +14,7 @@ vim.cmd.colorscheme("gruvbox-material")
 
 vim.api.nvim_set_hl(0, "Winbar", { link = "Normal" })
 vim.api.nvim_set_hl(0, "WinbarNC", { link = "Normal" })
-vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
+-- vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
 
 
 -- vim.pack.add({"https://github.com/blazkowolf/gruber-darker.nvim"})
@@ -24,3 +23,7 @@ vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
 -- vim.api.nvim_set_hl(0, "Winbar", { link = "Normal" })
 -- vim.api.nvim_set_hl(0, "WinbarNC", { link = "Normal" })
 -- vim.api.nvim_set_hl(0, "StatusLine", { link = "Normal" })
+
+-- vim.pack.add({"https://github.com/zenbones-theme/zenbones.nvim", "https://github.com/rktjmp/lush.nvim"})
+-- vim.opt.background = "dark"
+-- vim.cmd.colorscheme("zenwritten")

@@ -48,6 +48,7 @@ opt.ignorecase = true
 opt.smartcase = true
 opt.laststatus = 3
 -- opt.statusline = "%<%f %h%m%r%=%{%v:lua.require('patch').get_status()%}       %-14.(%l,%c%V%) %P"
+-- opt.statusline = "%<%f %h%m%r%=%{&filetype!=''?'('.&filetype.')':''}  %l:%c  %P"
 opt.cmdheight = 0
 opt.scrolloff = 8
 opt.signcolumn = "number"
@@ -85,10 +86,10 @@ keymap({ "n", "v" }, "<leader>y", [["+y]])
 keymap("n", "<leader>Y", [["+Y]])
 keymap("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'markdown',
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
   callback = function()
-    vim.bo.makeprg = 'pandoc % --reference-doc=templates/reference.docx --toc --number-sections -o output/%:t:r.docx'
+    vim.opt_local.makeprg = "make -C %:p:h/.. 2>&1"
   end,
 })
 
