@@ -70,22 +70,35 @@ vim.keymap.set("n", "<leader>.", function()
   end
 end)
 
--- blink.cmp
-vim.schedule(function()
-  require("blink.cmp").setup({
-    completion = {
-      menu = {
-        draw = {
-          columns = {
-            { "label", "label_description", gap = 1 },
-            { "kind" },
-          },
-        },
-      },
-    },
-    signature = { enabled = false },
-  })
-end)
+vim.opt.completeopt = { "menuone", "noselect", "popup" }
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client then
+            vim.lsp.completion.enable(true, client.id, args.buf, {
+                autotrigger = false,  -- manual only, like you want
+            })
+        end
+    end,
+})
+
+-- -- blink.cmp
+-- vim.schedule(function()
+--   require("blink.cmp").setup({
+--     completion = {
+--       menu = {
+--         draw = {
+--           columns = {
+--             { "label", "label_description", gap = 1 },
+--             { "kind" },
+--           },
+--         },
+--       },
+--     },
+--     signature = { enabled = false },
+--   })
+-- end)
 
 -- harpoon
 local harpoon = require("harpoon")

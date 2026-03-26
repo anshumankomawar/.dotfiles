@@ -1,4 +1,4 @@
-local theme = "gruvbox-material"
+local theme = "gruber-darker"
 
 if theme == "gruvbox-material" then
   vim.pack.add({ "https://github.com/sainnhe/gruvbox-material" })

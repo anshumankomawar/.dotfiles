@@ -6,7 +6,7 @@ auto-update-channel = tip
 desktop-notifications = true
 
 shell-integration = zsh
-shell-integration-features = true,ssh
+shell-integration-features = true
 window-colorspace = display-p3
 command = /bin/zsh
 input = "tmux new-session -A -s main\n"
@@ -55,6 +55,6 @@ keybind=ctrl+y=unbind
 keybind=ctrl+z=unbind
 keybind=ctrl+space=unbind
  
-# theme = Gruber Darker 
-theme = gruvbox
+theme = Gruber Darker 
+# theme = gruvbox
 # theme = Zenwritten Dark

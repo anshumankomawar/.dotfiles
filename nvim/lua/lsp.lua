@@ -29,3 +29,6 @@ vim.diagnostic.config({
 vim.keymap.set("n", "gd", vim.lsp.buf.definition)
 vim.keymap.set("n", "<leader>fmt", vim.lsp.buf.format)
 vim.keymap.set("n", "vd", vim.diagnostic.open_float)
+
+-- zig
+vim.g.zig_fmt_parse_errors = 0
