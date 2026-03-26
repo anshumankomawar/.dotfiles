@@ -17,7 +17,7 @@ vim.pack.add({
   "https://github.com/dmtrKovalenko/fff.nvim",
   { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("^1") },
   "https://github.com/tpope/vim-fugitive",
-  { src = "https://github.com/ThePrimeagen/harpoon/", branch = "harpoon2", name = "harpoon" },
+  { src = "https://github.com/ThePrimeagen/harpoon/", version = "harpoon2", name = "harpoon" },
   "https://github.com/nvim-lua/plenary.nvim",
   "https://github.com/nvim-treesitter/nvim-treesitter",
 })
