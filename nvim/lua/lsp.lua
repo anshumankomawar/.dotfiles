@@ -4,7 +4,9 @@ vim.pack.add({
   "https://github.com/ziglang/zig.vim",
 })
 
-require("mason").setup({})
+vim.schedule(function()
+  require("mason").setup({})
+end)
 
 vim.lsp.enable({
   "lua_ls",
@@ -24,32 +26,6 @@ vim.diagnostic.config({
 })
 
 -- keymaps
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-vim.keymap.set("n", "<leader>fmt", vim.lsp.buf.format, opts)
-vim.keymap.set('n', 'vd', vim.diagnostic.open_float)
-
--- ZLS 
---
--- vim.g.zig_fmt_parse_errors = 0
--- vim.g.zig_fmt_autosave = 1
-
--- zig autocommands
--- vim.api.nvim_create_autocmd('BufWritePre',{
---   pattern = {"*.zig", "*.zon"},
---   callback = function(ev)
---     vim.lsp.buf.code_action({
---       context = { only = { "source.organizeImports" } },
---       apply = true,
---     })
---   end
--- })
---
--- vim.api.nvim_create_autocmd('BufWritePre',{
---   pattern = {"*.zig", "*.zon"},
---   callback = function(ev)
---     vim.lsp.buf.code_action({
---       context = { only = { "source.fixAll" } },
---       apply = true,
---     })
---   end
--- })
+vim.keymap.set("n", "gd", vim.lsp.buf.definition)
+vim.keymap.set("n", "<leader>fmt", vim.lsp.buf.format)
+vim.keymap.set("n", "vd", vim.diagnostic.open_float)

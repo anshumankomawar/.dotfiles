@@ -1,19 +1,17 @@
 auto-update-channel = tip
-background-opacity = 1
-background-opacity-cells=true
+# background-opacity = 0.8
+# background-opacity-cells=true
+# background-blur = macos-glass-clear
 
 desktop-notifications = true
 
 shell-integration = zsh
-shell-integration-features = true
-shell-integration-features = no-cursor
-cursor-style=block
-command = /bin/zsh
+shell-integration-features = true,ssh
 window-colorspace = display-p3
-
+command = /bin/zsh
 input = "tmux new-session -A -s main\n"
-cursor-style=block
-cursor-style-blink=false
+cursor-style = block
+cursor-style-blink = false
 font-size = 19
 font-synthetic-style = false
 font-thicken = true
@@ -31,7 +29,7 @@ window-padding-x = 12
 # window-padding-y = 6, 6
 # window-padding-balance = true
 
-copy-on-select = true
+copy-on-select = false
 confirm-close-surface = false
 
 keybind=ctrl+a=unbind
