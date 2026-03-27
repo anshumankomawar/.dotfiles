@@ -39,6 +39,14 @@ picker_ui.open = require("minibuffer.integrations.fff")
 
 vim.keymap.set("n", "ff", function() require("fff").find_files() end, { desc = "Find files" })
 vim.keymap.set("n", "fg", function() require("minibuffer.examples.live-grep")() end, { desc = "Live grep" })
+vim.cmd.packadd("compile.nvim")
+local compile = require("compile-mode")
+compile.setup({ height = 10 })
+vim.keymap.set("n", "cc", function() compile.recompile() end, { desc = "Compile (rerun or prompt)" })
+vim.keymap.set("n", "cC", function() compile.prompt() end, { desc = "Compile (new command)" })
+vim.keymap.set("n", "ce", function() compile.first_error() end, { desc = "First compile error" })
+vim.keymap.set("n", "]e", function() compile.next_error() end, { desc = "Next compile error" })
+vim.keymap.set("n", "[e", function() compile.prev_error() end, { desc = "Prev compile error" })
 
 -- oil
 function _G.get_oil_winbar()

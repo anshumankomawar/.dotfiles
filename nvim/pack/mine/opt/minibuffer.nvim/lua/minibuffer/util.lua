@@ -163,7 +163,7 @@ end
 function M.set_win_height(win, height, set_cmdheight)
   if height == 0 then
     vim.api.nvim_win_set_config(win, { hide = true, height = 1 })
-  elseif vim.api.nvim_win_get_height(win) ~= height then
+  else
     vim.api.nvim_win_set_config(win, { hide = false, height = height })
   end
   if set_cmdheight and vim.o.cmdheight ~= height then

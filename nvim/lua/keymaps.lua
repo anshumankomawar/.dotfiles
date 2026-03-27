@@ -75,6 +75,8 @@ keymap("n", "<leader>j", "<cmd>wincmd j<CR>", { silent = true })
 keymap("n", "<leader>k", "<cmd>wincmd k<CR>", { silent = true })
 keymap("n", "<leader>l", "<cmd>wincmd l<CR>", { silent = true })
 keymap("n", "<leader>fmt", "<cmd>Format<CR>")
+keymap("n", "<leader>=", "<cmd>resize +1<CR>", { silent = true })
+keymap("n", "<leader>-", "<cmd>resize -1<CR>", { silent = true })
 keymap("n", "<leader>q", "<cmd>xa<CR>")
 keymap("v", "<C-c>", '"+y')
 
