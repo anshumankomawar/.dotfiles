@@ -5,13 +5,14 @@ auto-update-channel = tip
 
 desktop-notifications = true
 
-shell-integration = zsh
-shell-integration-features = true
+# shell-integration = zsh
+# shell-integration-features = true
 window-colorspace = display-p3
 command = /bin/zsh
 input = "tmux new-session -A -s main\n"
 cursor-style = block
 cursor-style-blink = false
+shell-integration-features = no-cursor
 font-size = 19
 font-synthetic-style = false
 font-thicken = true
