@@ -24,12 +24,11 @@ vim.opt.relativenumber = true
 vim.opt.statusline = "%<%f %h%m%r%=%{v:lua.vim.ui.progress_status()} %-14.(%l,%c%V%) %P"
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.completeopt = { "menu", "menuone", "fuzzy", "noinsert" }
+vim.opt.completeopt = { "menu", "menuone", "noinsert", "fuzzy" }
 vim.opt.swapfile = false
 vim.opt.termguicolors = true
 vim.opt.pumheight = 10
 vim.opt.wildoptions:append { "fuzzy" }
-vim.opt.path:append { "**" }
 vim.opt.smoothscroll = true
 vim.opt.grepprg = "rg --vimgrep --no-messages --smart-case"
 vim.opt.grepformat = "%f:%l:%c:%m"
@@ -154,8 +153,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	callback = function(args)
 		local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
 		if client:supports_method('textDocument/completion') then
-			vim.o.complete = 'o,.,w,b,u'
-			vim.o.completeopt = 'menu,menuone,popup,noinsert'
+			vim.o.complete = 'o,w,b,u'
+			vim.o.completeopt = 'menu,menuone,popup,noinsert,fuzzy,preview'
 			vim.lsp.completion.enable(true, client.id, args.buf)
 		end
 	end
@@ -188,25 +187,41 @@ vim.diagnostic.config({
 	severity_sort = true,
 })
 
-keymap("n", "ff", ":Find ")
-vim.api.nvim_create_user_command("Find", function(opts)
-	local arg = opts.args
-	if vim.fn.filereadable(arg) == 1 then
-		vim.cmd("edit " .. vim.fn.fnameescape(arg))
-		return
+local filescache = {}
+local cache_cwd = nil
+
+local function get_files()
+	local cwd = vim.uv.cwd()
+	if cache_cwd == cwd and not vim.tbl_isempty(filescache) then
+		return filescache
 	end
-	local result = vim.fn.systemlist("fd --type f " .. vim.fn.shellescape(arg))
-	if #result == 0 then
-		print("No files found")
+	local result = vim.system({ "rg", "--files", "--hidden", "--glob", "!.git", "--no-config" }, { text = true, cwd = cwd }):wait()
+	if result.code ~= 0 then
+		filescache = {}
 	else
-		vim.cmd("edit " .. vim.fn.fnameescape(result[1]))
+		filescache = vim.split(result.stdout, "\n", { trimempty = true })
 	end
-end, {
-nargs = 1,
-complete = function(arglead)
-	return vim.fn.systemlist("fd --type f " .. vim.fn.shellescape(arglead))
-end,
-	})
+	cache_cwd = cwd
+	return filescache
+end
+
+function _G.__findfunc(arg)
+	local files = get_files()
+	return arg == "" and files or vim.fn.matchfuzzy(files, arg)
+end
+
+vim.opt.findfunc = "v:lua.__findfunc"
+
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+	callback = function()
+		if vim.fn.getcmdtype() == ":" then
+			filescache = {}
+			cache_cwd = nil
+		end
+	end,
+})
+
+keymap("n", "ff", ":find ")
 
 
 
